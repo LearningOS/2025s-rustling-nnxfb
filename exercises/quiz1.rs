@@ -1,5 +1,3 @@
-// quiz1.rs
-//
 // This is a quiz for the following sections:
 // - Variables
 // - Functions
@@ -7,33 +5,37 @@
 //
 // Mary is buying apples. The price of an apple is calculated as follows:
 // - An apple costs 2 rustbucks.
-// - If Mary buys more than 40 apples, each apple only costs 1 rustbuck!
-// Write a function that calculates the price of an order of apples given the
-// quantity bought. No hints this time!
-//
-// No hints this time ;)
+// - However, if Mary buys more than 40 apples, the price of each apple in the
+// entire order is reduced to only 1 rustbuck!
 
-
-// Put your function here!
-fn calculate_price_of_apples(number: i32) -> i32 {
-
-    if number > 40 {
-        number
+// TODO: Write a function that calculates the price of an order of apples given
+// the quantity bought.
+fn calculate_price_of_apples(num:i32) -> i32 {
+    if num <= 40 {
+        num * 2
     } else {
-        number * 2
+        num
     }
 }
 
-// Don't modify this function!
-#[test]
-fn verify_test() {
-    let price1 = calculate_price_of_apples(35);
-    let price2 = calculate_price_of_apples(40);
-    let price3 = calculate_price_of_apples(41);
-    let price4 = calculate_price_of_apples(65);
+fn main() {
+    assert_eq!(calculate_price_of_apples(35), 70);
+    assert_eq!(calculate_price_of_apples(40), 80);
+    assert_eq!(calculate_price_of_apples(41), 41);
+    assert_eq!(calculate_price_of_apples(65), 65);
+    // You can optionally experiment here.
+}
 
-    assert_eq!(70, price1);
-    assert_eq!(80, price2);
-    assert_eq!(41, price3);
-    assert_eq!(65, price4);
+// Don't change the tests!
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn verify_test() {
+        assert_eq!(calculate_price_of_apples(35), 70);
+        assert_eq!(calculate_price_of_apples(40), 80);
+        assert_eq!(calculate_price_of_apples(41), 41);
+        assert_eq!(calculate_price_of_apples(65), 65);
+    }
 }
