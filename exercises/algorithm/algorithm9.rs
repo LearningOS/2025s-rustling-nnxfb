@@ -2,10 +2,10 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
+use std::fmt::{Debug, Display};
 
 pub struct Heap<T>
 where
@@ -37,34 +37,46 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+
+        let mut current = self.count;
+        while current != 1 {
+            let parent = current / 2;
+            if (self.comparator)(&self.items[current], &self.items[parent]) {
+                self.items.swap(current, parent);
+            } else {
+                break;
+            }
+            current = parent;
+        }
     }
 
-    fn parent_idx(&self, idx: usize) -> usize {
-        idx / 2
-    }
+    // fn parent_idx(&self, idx: usize) -> usize {
+    //     idx / 2
+    // }
 
-    fn children_present(&self, idx: usize) -> bool {
-        self.left_child_idx(idx) <= self.count
-    }
+    // fn children_present(&self, idx: usize) -> bool {
+    //     self.left_child_idx(idx) <= self.count
+    // }
 
-    fn left_child_idx(&self, idx: usize) -> usize {
-        idx * 2
-    }
+    // fn left_child_idx(&self, idx: usize) -> usize {
+    //     idx * 2
+    // }
 
-    fn right_child_idx(&self, idx: usize) -> usize {
-        self.left_child_idx(idx) + 1
-    }
+    // fn right_child_idx(&self, idx: usize) -> usize {
+    //     self.left_child_idx(idx) + 1
+    // }
 
-    fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
-    }
+    // fn smallest_child_idx(&self, idx: usize) -> usize {
+    //     //TODO
+	// 	0
+    // }
 }
 
 impl<T> Heap<T>
 where
-    T: Default + Ord,
+    T: Default + Ord + Copy + Debug,
 {
     /// Create a new MinHeap
     pub fn new_min() -> Self {
@@ -79,13 +91,41 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Copy,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        let ret;
+        if self.count != 0 {
+            ret = self.items[1];
+            self.items[1] = self.items.pop().unwrap();
+            self.count -= 1;
+        } else {
+            return None;
+        }
+        
+        let mut current = 1;
+        loop {
+            let lchild = current * 2;
+            let rchild = current * 2 + 1;
+
+            if rchild <= self.count {
+                if (self.comparator)(&self.items[lchild], &self.items[rchild]) {
+                    self.items.swap(current, lchild);
+                    current = lchild;
+                } else {
+                    self.items.swap(current, rchild);
+                    current = rchild;
+                }
+            } else if lchild < self.count {
+                self.items.swap(current, lchild);
+                current = lchild;
+            } else {
+                break;
+            }
+        };
+        Some(ret)
     }
 }
 

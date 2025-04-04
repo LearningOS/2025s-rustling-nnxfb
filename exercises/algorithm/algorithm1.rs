@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,14 +68,53 @@ impl<T> LinkedList<T> {
             },
         }
     }
+
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+    where
+        T: PartialOrd + Copy
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut merged_list = LinkedList::<T>::new();
+        let mut p = list_a.start;
+        let mut q = list_b.start;
+        unsafe {
+            while let (Some(a_ptr),Some(b_ptr)) = (p,q) {
+                if (*a_ptr.as_ptr()).val < (*b_ptr.as_ptr()).val {
+                    merged_list.add((*a_ptr.as_ptr()).val);
+                    p = (*a_ptr.as_ptr()).next;
+                } else {
+                    merged_list.add((*b_ptr.as_ptr()).val);
+                    q = (*b_ptr.as_ptr()).next;
+                }
+                dbg!(p);
+            }
+            while let Some(a_ptr) = p {
+                merged_list.add((*a_ptr.as_ptr()).val);
+                p = (*a_ptr.as_ptr()).next;
+            }
+            while let Some(b_ptr) = q {
+                merged_list.add((*b_ptr.as_ptr()).val);
+                q = (*b_ptr.as_ptr()).next;
+            }
         }
+        
+        // while p!=None && q!=None {
+        //     if (*p.as_ptr()).val < (*q.as_ptr()).val {
+        //         merged_list.add((*p.as_ptr()).val);
+        //         let p = (*p.as_ptr()).next;
+        //     } else {
+        //         merged_list.add((*q.as_ptr()).val);
+        //         let q = (*q.as_ptr()).next;
+        //     }
+        // };
+        // while p!=None {
+        //     merged_list.add((*p.as_ptr()).val);
+        //     let p = (*p.as_ptr()).next;
+        // };
+        // while q!=None {
+        //     merged_list.add((*q.as_ptr()).val);
+        //     let q = (*q.as_ptr()).next;
+        // };
+        merged_list
 	}
 }
 
@@ -143,6 +181,7 @@ mod tests {
 			list_b.add(vec_b[i]);
 		}
 		println!("list a {} list b {}", list_a,list_b);
+        dbg!(&list_a);
 		let mut list_c = LinkedList::<i32>::merge(list_a,list_b);
 		println!("merged List is {}", list_c);
 		for i in 0..target_vec.len(){
